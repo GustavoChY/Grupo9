@@ -1,0 +1,29 @@
+{% extends "app.html" %}{% load ui %}
+{% block titulo %}Mi panel{% endblock %}
+{% block main %}
+<div class="titulo-pagina"><div><h1>Hola, {{ usuario.nombres }} 👋</h1><div class="sub">Este es el resumen de sus viajes</div></div><a href="{% url 'solicitar' %}" class="btn btn-accent"><i class="bi bi-send"></i> Solicitar cotización</a></div>
+<div class="row g-3 mb-3">
+  <div class="col-md-4"><a class="kpi-link" href="{% url 'mis_cotizaciones' %}"><div class="tarjeta kpi"><div class="ico ambar"><i class="bi bi-file-earmark-text"></i></div><div><div class="num">{{ cotizaciones|length }}</div><div class="et">Cotizaciones activas</div></div></div></a></div>
+  <div class="col-md-4"><a class="kpi-link" href="{% url 'mis_reservas' %}"><div class="tarjeta kpi"><div class="ico"><i class="bi bi-calendar-check"></i></div><div><div class="num">{{ reservas|length }}</div><div class="et">Reservas recientes</div></div></div></a></div>
+  <div class="col-md-4"><a class="kpi-link" href="{% url 'notificaciones' %}"><div class="tarjeta kpi"><div class="ico verde"><i class="bi bi-bell"></i></div><div><div class="num">{{ n_notif }}</div><div class="et">Avisos sin leer</div></div></div></a></div>
+</div>
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="tarjeta mb-3"><div class="cab"><span>Mis reservas</span><a href="{% url 'mis_reservas' %}" class="small">Ver todas</a></div>
+      <div class="table-responsive"><table class="table tabla"><thead><tr><th>Código</th><th>Estado</th><th class="num-r">Total</th><th class="num-r">Saldo</th><th></th></tr></thead><tbody>
+      {% for r in reservas %}<tr><td class="codigo">{{ r.codigo }}</td><td>{{ r.estado|estado }}</td><td class="num-r">{{ r.total|bs }}</td><td class="num-r">{{ r.saldo|bs }}</td><td><a class="btn btn-sm btn-outline-primary" href="{% url 'mi_reserva' r.reserva_id %}">Abrir</a></td></tr>
+      {% empty %}<tr><td colspan="5" class="vacio"><i class="bi bi-calendar-x"></i>Aún no tiene reservas.</td></tr>{% endfor %}</tbody></table></div></div>
+    <div class="tarjeta"><div class="cab"><span>Cotizaciones recibidas</span><a href="{% url 'mis_cotizaciones' %}" class="small">Ver todas</a></div>
+      <div class="table-responsive"><table class="table tabla"><tbody>
+      {% for c in cotizaciones %}<tr><td class="codigo">{{ c.codigo }}</td><td>{{ c.estado|estado }}</td><td class="num-r">{{ c.total|bs }}</td><td class="small text-muted">vigente hasta {{ c.vigencia_hasta|fecha }}</td><td><a class="btn btn-sm btn-outline-primary" href="{% url 'mi_cotizacion' c.id %}">Ver</a></td></tr>
+      {% empty %}<tr><td class="vacio"><i class="bi bi-file-earmark-x"></i>Sin cotizaciones por ahora.</td></tr>{% endfor %}</tbody></table></div></div>
+  </div>
+  <div class="col-lg-5">
+    <div class="tarjeta mb-3"><div class="cab"><span>Avisos recientes</span><a href="{% url 'notificaciones' %}" class="small">Ver todos</a></div>
+      {% for n in notifs %}<div class="notif nueva"><span class="pto"></span><div class="small">{{ n.mensaje }}<div class="text-muted">{{ n.creado_en|fechahora }}</div></div></div>
+      {% empty %}<div class="vacio"><i class="bi bi-bell-slash"></i>Todo al día.</div>{% endfor %}</div>
+    <div class="tarjeta"><div class="cab">Le podría interesar</div><div class="list-group list-group-flush">
+      {% for p in paquetes %}<a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{% url 'paquete_detalle' p.id %}"><span><strong>{{ p.nombre }}</strong><br><small class="text-muted">{{ p.destino }} · {{ p.duracion_dias }} días</small></span><span class="fw-bold text-primary">{{ p.precio_final|bs }}</span></a>{% endfor %}</div></div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "app.html" %}
+{% block main %}
+<div class="titulo-pagina"><h1>Nueva cotización</h1></div>
+<form method="post" class="tarjeta" style="max-width:700px"><div class="cuerpo">{% csrf_token %}<div class="row g-3">
+ <div class="col-12"><label class="form-label small fw-semibold">Cliente *</label><select class="form-select" name="cliente_id" required><option value="">Seleccione…</option>{% for c in clientes %}<option value="{{ c.id }}">{{ c.n }}</option>{% endfor %}</select></div>
+ <div class="col-md-8"><label class="form-label small fw-semibold">Paquete (opcional)</label><select class="form-select" name="paquete_id"><option value="">— A medida —</option>{% for p in paquetes %}<option value="{{ p.id }}">{{ p.nombre }}</option>{% endfor %}</select></div>
+ <div class="col-md-4"><label class="form-label small fw-semibold">Pasajeros *</label><input class="form-control" type="number" min="1" name="nro_pasajeros" value="1" required></div></div>
+ <div class="mt-4"><button class="btn btn-primary">Crear borrador</button> <a href="{% url 'cotizaciones' %}" class="btn btn-outline-secondary">Cancelar</a></div></div></form>{% endblock %}

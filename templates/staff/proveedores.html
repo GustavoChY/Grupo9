@@ -1,0 +1,5 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><h1>Proveedores</h1><a class="btn btn-accent" href="{% url 'proveedor_nuevo' %}"><i class="bi bi-plus-lg"></i> Nuevo</a></div>
+<div class="tarjeta"><div class="table-responsive"><table class="table tabla"><thead><tr><th>Nombre</th><th>Tipo</th><th>NIT</th><th>Contacto</th><th>Servicios</th><th>Estado</th><th></th></tr></thead><tbody>
+{% for p in lista %}<tr><td><strong>{{ p.nombre }}</strong></td><td>{{ p.tipo|etiqueta }}</td><td>{{ p.nit }}</td><td>{{ p.contacto_nombre|default:"—" }}<div class="small text-muted">{{ p.contacto_telefono|default:"" }}</div></td><td>{{ p.servicios }}</td><td>{% if p.activo %}<span class="badge text-bg-success">Activo</span>{% else %}<span class="badge text-bg-secondary">Inactivo</span>{% endif %}</td><td><a class="btn btn-sm btn-outline-secondary" href="{% url 'proveedor_editar' p.id %}"><i class="bi bi-pencil"></i></a></td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}{% load ui %}
+{% block publico %}
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <span class="chip"><i class="bi bi-stars"></i> Agencia de viajes en Bolivia</span>
+        <h1>Descubra Bolivia y el mundo, sin complicaciones.</h1>
+        <p class="lead mt-3">Cotice en línea, reserve su viaje y siga sus pagos desde un solo lugar. Un agente le acompaña en cada paso.</p>
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <a class="btn btn-accent btn-lg px-4" href="{% url 'paquetes' %}"><i class="bi bi-compass me-1"></i> Ver paquetes</a>
+          {% if not usuario %}<a class="btn btn-outline-light btn-lg px-4" href="{% url 'registrarse' %}">Crear mi cuenta</a>{% else %}<a class="btn btn-outline-light btn-lg px-4" href="{% url 'panel' %}">Ir a mi panel</a>{% endif %}
+        </div>
+        <div class="stat-hero">
+          <div><b>{{ stats.destinos }}</b><span>destinos</span></div>
+          <div><b>{{ stats.paquetes }}</b><span>paquetes vigentes</span></div>
+          <div><b>{{ stats.viajes }}</b><span>viajes concretados</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion"><div class="container">
+  <div class="d-flex justify-content-between align-items-end mb-4">
+    <div><h2>Paquetes destacados</h2><div class="text-muted">Precios finales con comisión e impuestos incluidos.</div></div>
+    <a href="{% url 'paquetes' %}" class="btn btn-outline-primary btn-sm">Ver todos</a>
+  </div>
+  <div class="row g-4">
+    {% for p in paquetes %}<div class="col-md-6 col-lg-4">{% include "partials/tarjeta_paquete.html" %}</div>
+    {% empty %}<div class="vacio"><i class="bi bi-suitcase2"></i>Pronto publicaremos nuevos paquetes.</div>{% endfor %}
+  </div>
+</div></section>
+
+<section class="seccion" style="background:#fff"><div class="container">
+  <h2 class="text-center mb-4">¿Cómo funciona?</h2>
+  <div class="row g-3">
+    <div class="col-md-3 paso"><div class="n"><i class="bi bi-search"></i></div><h3 class="h6">1. Elija</h3><p class="small text-muted">Explore paquetes o pida un destino a su medida.</p></div>
+    <div class="col-md-3 paso"><div class="n"><i class="bi bi-file-earmark-text"></i></div><h3 class="h6">2. Cotice</h3><p class="small text-muted">Un agente le envía la cotización detallada.</p></div>
+    <div class="col-md-3 paso"><div class="n"><i class="bi bi-calendar-check"></i></div><h3 class="h6">3. Reserve</h3><p class="small text-muted">Acepte, registre pasajeros y confirme su reserva.</p></div>
+    <div class="col-md-3 paso"><div class="n"><i class="bi bi-cash-coin"></i></div><h3 class="h6">4. Pague y viaje</h3><p class="small text-muted">Suba su comprobante y siga el saldo en línea.</p></div>
+  </div>
+</div></section>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><h1>Mis reservas</h1></div>
+<div class="tarjeta"><div class="table-responsive"><table class="table tabla"><thead><tr><th>Código</th><th>Viaje</th><th>Estado</th><th class="num-r">Total</th><th>Pagado</th><th class="num-r">Saldo</th><th></th></tr></thead><tbody>
+{% for r in lista %}<tr><td class="codigo">{{ r.codigo }}</td><td>{{ r.fecha_inicio|fecha }} → {{ r.fecha_fin|fecha }}</td><td>{{ r.estado|estado }}</td><td class="num-r">{{ r.total|bs }}</td>
+<td style="min-width:120px"><div class="progress"><div class="progress-bar" style="width:{{ r|avance }}%"></div></div><small class="text-muted">{{ r|avance }}%</small></td><td class="num-r">{{ r.saldo|bs }}</td><td><a class="btn btn-sm btn-outline-primary" href="{% url 'mi_reserva' r.reserva_id %}">Abrir</a></td></tr>
+{% empty %}<tr><td colspan="7" class="vacio"><i class="bi bi-calendar-x"></i>No tiene reservas todavía.</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

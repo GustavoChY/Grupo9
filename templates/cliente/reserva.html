@@ -1,0 +1,7 @@
+{% extends "app.html" %}{% load ui %}
+{% block titulo %}Reserva {{ r.codigo }}{% endblock %}
+{% block main %}
+<div class="titulo-pagina"><div><a href="{% url 'mis_reservas' %}" class="small">← Mis reservas</a><h1 class="mt-1"><span class="codigo fs-4">{{ r.codigo }}</span> {{ r.estado|estado }}</h1>
+<div class="sub">Viaje del {{ r.fecha_inicio|fecha }} al {{ r.fecha_fin|fecha }} · {{ r.nro_pasajeros }} pasajero(s){% if r.motivo_cancelacion %} · Motivo: {{ r.motivo_cancelacion }}{% endif %}</div></div></div>
+{% include "partials/reserva_comun.html" %}
+{% endblock %}

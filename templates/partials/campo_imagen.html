@@ -1,0 +1,7 @@
+{% load static %}
+<div class="mt-3 p-3 border rounded-3 bg-light">
+  <label class="form-label fw-semibold small">Imagen (JPG, PNG o WEBP, máx. 3 MB)</label>
+  {% if imagen %}<div class="d-flex align-items-center gap-3 mb-2"><img src="/media/{{ imagen }}" alt="Imagen actual" style="height:90px;border-radius:.6rem;object-fit:cover"><div class="form-check"><input class="form-check-input" type="checkbox" name="quitar_imagen" id="qi"><label class="form-check-label small" for="qi">Quitar la imagen actual</label></div></div>{% endif %}
+  <input type="file" name="imagen" accept=".jpg,.jpeg,.png,.webp" class="form-control">
+  <div class="ayuda mt-1">Recomendado: foto horizontal, por ejemplo 1200 × 600 px.</div>
+</div>

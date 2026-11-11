@@ -1,0 +1,7 @@
+{% load ui %}
+<div class="total-box">
+  <div class="fila"><span>Costo de proveedores</span><span>{{ c.costo_proveedor|bs }}</span></div>
+  <div class="fila"><span>Comisión de la agencia ({{ c.comision_pct|pct }})</span><span>{{ c.comision|bs }}</span></div>
+  <div class="fila"><span>Impuestos ({{ c.impuesto_pct|pct }})</span><span>{{ c.impuestos|bs }}</span></div>
+  <div class="fila total"><span>Total</span><span>{{ c.total|bs }}</span></div>
+</div>

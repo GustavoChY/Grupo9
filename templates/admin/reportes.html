@@ -1,0 +1,35 @@
+{% extends "app.html" %}{% load ui static %}
+{% block titulo %}Reportes{% endblock %}
+{% block main %}
+<div class="titulo-pagina"><div><h1>Reportes de gestión</h1><div class="sub">Calculados directamente desde las vistas de la base de datos.</div></div>
+<div class="dropdown no-print"><button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-download"></i> Exportar CSV</button><ul class="dropdown-menu dropdown-menu-end">{% for k, v in reportes.items %}<li><a class="dropdown-item" href="{% url 'reporte_csv' k %}">{{ v.0 }}</a></li>{% endfor %}</ul>
+<button class="btn btn-outline-secondary" onclick="window.print()"><i class="bi bi-printer"></i></button></div></div>
+<div class="row g-3 mb-3">
+ <div class="col-6 col-xl-3"><div class="tarjeta kpi"><div class="ico verde"><i class="bi bi-currency-exchange"></i></div><div><div class="num fs-4">{{ resumen.ventas|bs }}</div><div class="et">Ventas acumuladas</div></div></div></div>
+ <div class="col-6 col-xl-3"><div class="tarjeta kpi"><div class="ico ambar"><i class="bi bi-percent"></i></div><div><div class="num fs-4">{{ resumen.comision|bs }}</div><div class="et">Comisión de la agencia</div></div></div></div>
+ <div class="col-6 col-xl-3"><div class="tarjeta kpi"><div class="ico"><i class="bi bi-receipt"></i></div><div><div class="num fs-4">{{ resumen.impuestos|bs }}</div><div class="et">Impuestos</div></div></div></div>
+ <div class="col-6 col-xl-3"><div class="tarjeta kpi"><div class="ico rojo"><i class="bi bi-calendar-check"></i></div><div><div class="num fs-4">{{ resumen.reservas }}</div><div class="et">Reservas vigentes</div></div></div></div>
+</div>
+<div class="row g-3 mb-3">
+ <div class="col-lg-7"><div class="tarjeta"><div class="cab">Ventas y comisión por mes</div><div class="cuerpo"><div class="chart-box"><canvas id="gVentas"></canvas></div></div></div></div>
+ <div class="col-lg-5"><div class="tarjeta"><div class="cab">Reservas por estado</div><div class="cuerpo"><div class="chart-box"><canvas id="gEstados"></canvas></div></div></div></div>
+ <div class="col-lg-6"><div class="tarjeta"><div class="cab">Cobros verificados por mes</div><div class="cuerpo"><div class="chart-box"><canvas id="gCobros"></canvas></div></div></div></div>
+ <div class="col-lg-6"><div class="tarjeta"><div class="cab">Servicios más solicitados</div><div class="cuerpo"><div class="chart-box"><canvas id="gServ"></canvas></div></div></div></div>
+</div>
+<div class="tarjeta"><div class="cab">Clientes frecuentes</div><div class="table-responsive"><table class="table tabla"><thead><tr><th>Cliente</th><th>Reservas</th><th class="num-r">Total gastado</th><th>Última reserva</th></tr></thead><tbody>
+{% for c in cli %}<tr><td>{{ c.cliente }}</td><td>{{ c.reservas }}</td><td class="num-r">{{ c.total_gastado|bs }}</td><td>{{ c.ultima_reserva|fecha }}</td></tr>{% empty %}<tr><td colspan="4" class="vacio">Sin datos.</td></tr>{% endfor %}</tbody></table></div></div>
+{{ datos_json|json_script:"datos" }}
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'vendor/chart.umd.js' %}"></script>
+<script>
+const D = JSON.parse(document.getElementById('datos').textContent);
+const C = {p:'#0e5a6b', a:'#f2a33a', g:'#2e9e6b', r:'#cf4a4a', b:'#4a4e9c', pu:'#7d3f6b'};
+const bs = v => 'Bs ' + Number(v).toLocaleString('es-BO');
+Chart.defaults.font.family = 'Segoe UI, system-ui, sans-serif'; Chart.defaults.maintainAspectRatio = false;
+const opt = {plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c => ' ' + c.dataset.label + ': ' + bs(c.parsed.y ?? c.parsed.x)}}},scales:{y:{beginAtZero:true,ticks:{callback:bs}}}};
+new Chart(gVentas, {type:'bar', data:{labels:D.meses, datasets:[{label:'Ventas', data:D.ventas, backgroundColor:C.p, borderRadius:6},{label:'Comisión', data:D.comision, backgroundColor:C.a, borderRadius:6}]}, options:opt});
+new Chart(gCobros, {type:'line', data:{labels:D.cobros_meses, datasets:[{label:'Cobrado', data:D.cobros, borderColor:C.g, backgroundColor:'rgba(46,158,107,.15)', fill:true, tension:.3}]}, options:opt});
+new Chart(gEstados, {type:'doughnut', data:{labels:D.est_n, datasets:[{data:D.est_v, backgroundColor:[C.a, C.p, C.g, C.r, '#374151']}]}, options:{plugins:{legend:{position:'bottom'}}}});
+new Chart(gServ, {type:'bar', data:{labels:D.serv_n, datasets:[{label:'Reservas', data:D.serv_v, backgroundColor:C.b, borderRadius:6}]}, options:{indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{beginAtZero:true, ticks:{precision:0}}}}});
+</script>{% endblock %}

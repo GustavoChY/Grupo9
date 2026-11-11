@@ -1,0 +1,6 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><h1>Reservas</h1><form method="get"><select class="form-select" name="estado" onchange="this.form.submit()"><option value="">Todos los estados</option>{% for e in "PENDIENTE CONFIRMADA PAGADA CANCELADA FINALIZADA"|split %}<option value="{{ e }}" {% if estado == e %}selected{% endif %}>{{ e|texto_estado }}</option>{% endfor %}</select></form></div>
+<div class="tarjeta"><div class="table-responsive"><table class="table tabla"><thead><tr><th>Código</th><th>Cliente</th><th>Viaje</th><th>Pax</th><th>Estado</th><th class="num-r">Total</th><th class="num-r">Saldo</th><th></th></tr></thead><tbody>
+{% for r in lista %}<tr><td class="codigo">{{ r.codigo }}</td><td>{{ r.cliente }}</td><td>{{ r.fecha_inicio|fecha }} → {{ r.fecha_fin|fecha }}</td><td>{{ r.nro_pasajeros }}</td><td>{{ r.estado|estado }}</td><td class="num-r">{{ r.total|bs }}</td><td class="num-r">{{ r.saldo|bs }}</td><td><a class="btn btn-sm btn-outline-primary" href="{% url 'reserva_detalle' r.reserva_id %}">Abrir</a></td></tr>
+{% empty %}<tr><td colspan="8" class="vacio"><i class="bi bi-calendar-x"></i>Sin reservas.</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

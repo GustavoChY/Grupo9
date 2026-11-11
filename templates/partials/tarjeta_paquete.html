@@ -1,0 +1,16 @@
+{% load ui %}
+<div class="tarjeta paq">
+  <div class="foto {% if p.ambito == 'INTERNACIONAL' %}t2{% else %}t1{% endif %}">
+    {% if p.foto %}<img src="/media/{{ p.foto }}" alt="{{ p.nombre }}">{% else %}<i class="bi bi-{% if p.ambito == 'INTERNACIONAL' %}globe-americas{% else %}tree{% endif %}"></i>{% endif %}
+    <span class="badge text-bg-light amb">{{ p.ambito|etiqueta }}</span>
+  </div>
+  <div class="cuerpo">
+    <div class="text-muted small"><i class="bi bi-geo-alt-fill text-danger"></i> {{ p.destino }}, {{ p.pais }} · {{ p.duracion_dias }} días</div>
+    <h3 class="h5 mt-1">{{ p.nombre }}</h3>
+    <p class="small text-muted flex-grow-1">{{ p.descripcion|default:""|truncatechars:105 }}</p>
+    <div class="d-flex align-items-end justify-content-between">
+      <div class="precio"><small>desde, por persona</small>{{ p.precio_final|bs }}</div>
+      <a href="{% url 'paquete_detalle' p.id %}" class="btn btn-primary btn-sm">Ver detalle</a>
+    </div>
+  </div>
+</div>

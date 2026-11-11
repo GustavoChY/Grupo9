@@ -1,0 +1,8 @@
+{% if r.estado == 'PENDIENTE' or r.estado == 'CONFIRMADA' or r.estado == 'PAGADA' %}
+<div class="tarjeta"><div class="cab">Acciones del agente</div><div class="cuerpo d-grid gap-2">
+  {% if r.estado == 'PENDIENTE' %}<form method="post">{% csrf_token %}<input type="hidden" name="accion" value="confirmar"><button class="btn btn-primary w-100"><i class="bi bi-check2-circle"></i> Confirmar reserva</button></form>{% endif %}
+  {% if r.estado == 'PAGADA' %}<form method="post" onsubmit="return confirm('¿Marcar el viaje como finalizado?')">{% csrf_token %}<input type="hidden" name="accion" value="finalizar"><button class="btn btn-dark w-100"><i class="bi bi-flag"></i> Finalizar viaje</button></form>{% endif %}
+  <hr class="my-1">
+  <form method="post" onsubmit="return confirm('¿Cancelar la reserva?')">{% csrf_token %}<input type="hidden" name="accion" value="cancelar"><textarea class="form-control mb-2" name="motivo" rows="2" placeholder="Motivo de cancelación" minlength="5"></textarea><button class="btn btn-outline-danger btn-sm w-100">Cancelar reserva</button></form>
+</div></div>
+{% endif %}

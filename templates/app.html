@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block cuerpo %}
+{% with u=request.resolver_match.url_name %}
+{% include "partials/menu_movil.html" %}
+<div class="layout">
+  <aside class="sidebar">{% include "partials/menu.html" %}</aside>
+  <main class="contenido">
+    {% if messages %}{% for m in messages %}<div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{ m.tags }}{% endif %} alert-dismissible fade show" role="alert">{{ m }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}
+    {% block main %}{% endblock %}
+  </main>
+</div>
+{% endwith %}
+{% endblock %}

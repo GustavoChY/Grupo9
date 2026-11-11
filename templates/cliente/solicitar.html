@@ -1,0 +1,19 @@
+{% extends "app.html" %}
+{% block titulo %}Solicitar cotización{% endblock %}
+{% block main %}
+<div class="titulo-pagina"><div><h1>Solicitar cotización</h1><div class="sub">Cuéntenos qué viaje desea y un agente le enviará el precio detallado.</div></div></div>
+<form method="post" class="tarjeta" style="max-width:820px"><div class="cuerpo">{% csrf_token %}
+  <div class="row g-3">
+    <div class="col-md-6"><label class="form-label small fw-semibold">Paquete turístico</label>
+      <select class="form-select {% if errores.paquete_id %}is-invalid{% endif %}" name="paquete_id" id="paq"><option value="">— Ninguno (viaje a medida) —</option>
+      {% for p in paquetes %}<option value="{{ p.id }}" {% if v.paquete_id|stringformat:"s" == p.id|stringformat:"s" %}selected{% endif %}>{{ p.nombre }} · {{ p.destino }}</option>{% endfor %}</select>
+      {% if errores.paquete_id %}<div class="invalid-feedback d-block">{{ errores.paquete_id }}</div>{% endif %}</div>
+    <div class="col-md-6"><label class="form-label small fw-semibold">…o un destino a medida</label>
+      <select class="form-select" name="destino_id" id="dest"><option value="">—</option>{% for d in destinos %}<option value="{{ d.id }}" {% if v.destino_id|stringformat:"s" == d.id|stringformat:"s" %}selected{% endif %}>{{ d.nombre }} ({{ d.pais }})</option>{% endfor %}</select></div>
+    <div class="col-md-4"><label class="form-label small fw-semibold">Fecha de salida</label><input type="date" class="form-control" name="fecha_viaje_inicio" value="{{ v.fecha_viaje_inicio }}"></div>
+    <div class="col-md-4"><label class="form-label small fw-semibold">Fecha de regreso</label><input type="date" class="form-control {% if errores.fecha_viaje_fin %}is-invalid{% endif %}" name="fecha_viaje_fin" value="{{ v.fecha_viaje_fin }}">{% if errores.fecha_viaje_fin %}<div class="invalid-feedback">{{ errores.fecha_viaje_fin }}</div>{% endif %}</div>
+    <div class="col-md-4"><label class="form-label small fw-semibold">Nro. de pasajeros <span class="text-danger">*</span></label><input type="number" min="1" max="50" class="form-control {% if errores.nro_pasajeros %}is-invalid{% endif %}" name="nro_pasajeros" value="{{ v.nro_pasajeros }}">{% if errores.nro_pasajeros %}<div class="invalid-feedback">{{ errores.nro_pasajeros }}</div>{% endif %}</div>
+    <div class="col-12"><label class="form-label small fw-semibold">Observaciones</label><textarea class="form-control" rows="3" name="observaciones" placeholder="Preferencias, hoteles, presupuesto…">{{ v.observaciones }}</textarea></div>
+  </div>
+  <div class="mt-4 d-flex gap-2"><button class="btn btn-primary btn-lg px-4"><i class="bi bi-send"></i> Enviar solicitud</button><a class="btn btn-outline-secondary btn-lg" href="{% url 'panel' %}">Cancelar</a></div>
+</div></form>{% endblock %}

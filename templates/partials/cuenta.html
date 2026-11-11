@@ -1,0 +1,5 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><div><h1>Mis datos</h1><div class="sub">{{ usuario.username }} · {{ usuario.email }} · {{ usuario.rol_nombre }}</div></div><a href="{% url 'cambiar_password' %}" class="btn btn-outline-primary"><i class="bi bi-key"></i> Cambiar contraseña</a></div>
+<form method="post" class="tarjeta" style="max-width:820px"><div class="cuerpo">{% csrf_token %}{% include "partials/campos.html" %}<div class="mt-4"><button class="btn btn-primary px-4">Guardar cambios</button></div></div></form>
+{% endblock %}

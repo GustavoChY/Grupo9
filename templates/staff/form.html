@@ -1,0 +1,11 @@
+{% extends "app.html" %}{% load ui %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block main %}
+<div class="titulo-pagina"><div><a class="small" href="{{ volver }}">← Volver</a><h1 class="mt-1">{{ titulo }}</h1></div></div>
+<form method="post" enctype="multipart/form-data" class="tarjeta" style="max-width:860px"><div class="cuerpo">{% csrf_token %}
+  {% include "partials/campos.html" %}
+  {% if con_imagen %}{% include "partials/campo_imagen.html" %}{% endif %}
+  <div class="mt-4 d-flex gap-2"><button class="btn btn-primary px-4">Guardar</button><a class="btn btn-outline-secondary" href="{{ volver }}">Cancelar</a></div>
+</div></form>
+{% if historial %}<div class="tarjeta mt-3" style="max-width:860px"><div class="cab">Historial de tarifas</div><div class="table-responsive"><table class="table tabla"><thead><tr><th>Fecha</th><th class="num-r">Anterior</th><th class="num-r">Nueva</th><th>Usuario</th></tr></thead><tbody>{% for h in historial %}<tr><td>{{ h.fecha|fechahora }}</td><td class="num-r">{{ h.tarifa_anterior|bs }}</td><td class="num-r">{{ h.tarifa_nueva|bs }}</td><td>{{ h.usuario|default:"—" }}</td></tr>{% endfor %}</tbody></table></div></div>{% endif %}
+{% endblock %}

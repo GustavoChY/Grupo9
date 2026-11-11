@@ -1,0 +1,8 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><h1>Cotizaciones</h1><div class="d-flex gap-2">
+<form method="get"><select class="form-select" name="estado" onchange="this.form.submit()"><option value="">Todos los estados</option>{% for e in "BORRADOR ENVIADA ACEPTADA RECHAZADA VENCIDA"|split %}<option value="{{ e }}" {% if estado == e %}selected{% endif %}>{{ e|texto_estado }}</option>{% endfor %}</select></form>
+<a class="btn btn-accent" href="{% url 'cotizacion_nueva' %}"><i class="bi bi-plus-lg"></i> Nueva</a></div></div>
+<div class="tarjeta"><div class="table-responsive"><table class="table tabla"><thead><tr><th>Código</th><th>Cliente</th><th>Paquete</th><th>Pax</th><th class="num-r">Total</th><th>Vigencia</th><th>Estado</th><th></th></tr></thead><tbody>
+{% for c in lista %}<tr><td class="codigo">{{ c.codigo }}</td><td>{{ c.cliente }}</td><td>{{ c.paquete|default:"A medida" }}</td><td>{{ c.nro_pasajeros }}</td><td class="num-r">{{ c.total|bs }}</td><td>{{ c.vigencia_hasta|fecha }}</td><td>{{ c.estado|estado }}{% if c.reserva_solicitada_en and c.estado == 'ENVIADA' %} <i class="bi bi-bell-fill text-warning" title="El cliente pidió reservar"></i>{% endif %}</td><td><a class="btn btn-sm btn-outline-primary" href="{% url 'cotizacion_detalle' c.id %}">Abrir</a></td></tr>
+{% empty %}<tr><td colspan="8" class="vacio"><i class="bi bi-file-earmark-x"></i>Sin cotizaciones.</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

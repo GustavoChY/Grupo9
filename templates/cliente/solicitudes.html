@@ -1,0 +1,7 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><h1>Mis solicitudes</h1><a href="{% url 'solicitar' %}" class="btn btn-accent"><i class="bi bi-plus-lg"></i> Nueva</a></div>
+<div class="tarjeta"><div class="table-responsive"><table class="table tabla"><thead><tr><th>Código</th><th>Interés</th><th>Fechas</th><th>Pasajeros</th><th>Estado</th><th>Enviada</th><th></th></tr></thead><tbody>
+{% for s in lista %}<tr><td class="codigo">{{ s.codigo }}</td><td>{{ s.paquete|default:s.destino }}</td><td>{{ s.fecha_viaje_inicio|fecha }} → {{ s.fecha_viaje_fin|fecha }}</td><td>{{ s.nro_pasajeros }}</td><td>{{ s.estado|estado }}</td><td>{{ s.creado_en|fechahora }}</td>
+<td>{% if s.cotizacion_id %}<a class="btn btn-sm btn-outline-primary" href="{% url 'mi_cotizacion' s.cotizacion_id %}">Ver cotización</a>{% endif %}</td></tr>
+{% empty %}<tr><td colspan="7" class="vacio"><i class="bi bi-inbox"></i>Todavía no envió solicitudes.</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

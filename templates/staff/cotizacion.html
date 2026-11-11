@@ -1,0 +1,36 @@
+{% extends "app.html" %}{% load ui %}
+{% block titulo %}{{ c.codigo }}{% endblock %}
+{% block main %}
+<div class="titulo-pagina"><div><a class="small" href="{% url 'cotizaciones' %}">← Cotizaciones</a><h1 class="mt-1"><span class="codigo fs-4">{{ c.codigo }}</span> {{ c.estado|estado }}</h1>
+<div class="sub">{{ c.cliente }} · {{ c.paquete|default:"A medida" }} · {{ c.nro_pasajeros }} pasajero(s) · Agente {{ c.agente }}</div></div></div>
+{% if c.reserva_solicitada_en and c.estado == 'ENVIADA' %}<div class="alert alert-warning"><i class="bi bi-bell-fill"></i> El cliente solicitó reservar esta cotización el {{ c.reserva_solicitada_en|fechahora }}.</div>{% endif %}
+<div class="row g-3">
+ <div class="col-lg-8">
+  <div class="tarjeta mb-3"><div class="cab"><span>Servicios cotizados</span>
+    {% if c.estado == 'BORRADOR' and c.paquete_id %}<form method="post" onsubmit="return confirm('Se reemplazarán los servicios por los del paquete.')">{% csrf_token %}<input type="hidden" name="accion" value="desde_paquete"><button class="btn btn-sm btn-outline-primary"><i class="bi bi-arrow-repeat"></i> Regenerar desde el paquete</button></form>{% endif %}</div>
+    {% if c.estado == 'BORRADOR' %}{% include "partials/cot_detalle_tabla.html" with editable=True proveedor=True %}{% else %}{% include "partials/cot_detalle_tabla.html" with proveedor=True %}{% endif %}
+    {% if c.estado == 'BORRADOR' %}<div class="cuerpo border-top"><form method="post" class="row g-2 align-items-end">{% csrf_token %}<input type="hidden" name="accion" value="agregar">
+      <div class="col-md-7"><label class="form-label small fw-semibold">Agregar servicio</label><select class="form-select" name="servicio_id" required>{% for s in servicios %}<option value="{{ s.id }}">{{ s.nombre }} — {{ s.proveedor }} ({{ s.tarifa_base|bs }})</option>{% endfor %}</select></div>
+      <div class="col-md-2"><label class="form-label small fw-semibold">Cantidad</label><input class="form-control" type="number" min="1" name="cantidad" value="{{ c.nro_pasajeros }}"></div>
+      <div class="col-md-3"><button class="btn btn-primary w-100"><i class="bi bi-plus-lg"></i> Agregar</button></div></form></div>{% endif %}
+  </div>
+  {% if c.estado == 'BORRADOR' %}<div class="tarjeta"><div class="cab">Condiciones comerciales</div><div class="cuerpo"><form method="post" class="row g-3">{% csrf_token %}<input type="hidden" name="accion" value="condiciones">
+    <div class="col-md-3"><label class="form-label small fw-semibold">Comisión %</label><input class="form-control" type="number" step="0.01" min="0" max="100" name="comision_pct" value="{{ c.comision_pct|stringformat:'s' }}" required></div>
+    <div class="col-md-3"><label class="form-label small fw-semibold">Impuesto %</label><input class="form-control" type="number" step="0.01" min="0" max="100" name="impuesto_pct" value="{{ c.impuesto_pct|stringformat:'s' }}" required></div>
+    <div class="col-md-3"><label class="form-label small fw-semibold">Vigente hasta</label><input class="form-control" type="date" name="vigencia_hasta" value="{{ c.vigencia_hasta|date:'Y-m-d' }}" required></div>
+    <div class="col-12"><label class="form-label small fw-semibold">Observaciones</label><textarea class="form-control" rows="2" name="observaciones">{{ c.observaciones|default:"" }}</textarea></div>
+    <div class="col-12"><button class="btn btn-outline-primary">Guardar y recalcular</button></div></form></div></div>
+  {% elif c.observaciones %}<div class="tarjeta"><div class="cuerpo"><div class="dato mb-0"><div class="et">Observaciones</div><div class="val">{{ c.observaciones }}</div></div></div></div>{% endif %}
+ </div>
+ <div class="col-lg-4"><div class="sticky-total">
+  <div class="tarjeta mb-3"><div class="cuerpo">{% include "partials/cot_totales.html" %}<div class="small text-muted mt-2">Vigente hasta {{ c.vigencia_hasta|fecha }}</div></div></div>
+  {% if c.estado == 'BORRADOR' %}<form method="post" class="mb-2">{% csrf_token %}<input type="hidden" name="accion" value="enviar"><button class="btn btn-accent btn-lg w-100"><i class="bi bi-send-check"></i> Enviar al cliente</button></form>
+  {% elif c.estado == 'ENVIADA' %}
+  {% if 'RES_GESTIONAR' in permisos %}<div class="tarjeta mb-2"><div class="cab">Convertir en reserva</div><div class="cuerpo"><form method="post">{% csrf_token %}<input type="hidden" name="accion" value="reservar">
+    <label class="form-label small fw-semibold">Fecha de salida</label><input class="form-control mb-2" type="date" name="fecha_inicio" required>
+    <label class="form-label small fw-semibold">Fecha de regreso</label><input class="form-control mb-3" type="date" name="fecha_fin" required>
+    <button class="btn btn-primary w-100"><i class="bi bi-calendar-check"></i> Crear reserva</button></form></div></div>{% endif %}
+  <form method="post" onsubmit="return confirm('¿Marcar como rechazada?')">{% csrf_token %}<input type="hidden" name="accion" value="rechazar"><button class="btn btn-outline-danger btn-sm w-100">Marcar como rechazada</button></form>
+  {% elif c.reserva_id %}<a class="btn btn-primary w-100" href="{% url 'reserva_detalle' c.reserva_id %}">Ver reserva</a>{% endif %}
+ </div></div>
+</div>{% endblock %}

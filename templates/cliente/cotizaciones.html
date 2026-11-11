@@ -1,0 +1,6 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><h1>Mis cotizaciones</h1></div>
+<div class="tarjeta"><div class="table-responsive"><table class="table tabla"><thead><tr><th>Código</th><th>Paquete</th><th>Pasajeros</th><th class="num-r">Total</th><th>Vigencia</th><th>Estado</th><th></th></tr></thead><tbody>
+{% for c in lista %}<tr><td class="codigo">{{ c.codigo }}</td><td>{{ c.paquete|default:"A medida" }}</td><td>{{ c.nro_pasajeros }}</td><td class="num-r">{{ c.total|bs }}</td><td>{{ c.vigencia_hasta|fecha }}</td><td>{{ c.estado|estado }}</td><td><a class="btn btn-sm btn-outline-primary" href="{% url 'mi_cotizacion' c.id %}">Ver</a></td></tr>
+{% empty %}<tr><td colspan="7" class="vacio"><i class="bi bi-file-earmark-x"></i>Aún no recibió cotizaciones.</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

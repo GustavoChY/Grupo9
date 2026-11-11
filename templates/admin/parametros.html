@@ -1,0 +1,7 @@
+{% extends "app.html" %}
+{% block main %}
+<div class="titulo-pagina"><div><h1>Parámetros del sistema</h1><div class="sub">Valores por defecto que usan cotizaciones y control de acceso.</div></div></div>
+<form method="post" class="tarjeta" style="max-width:760px"><div class="cuerpo">{% csrf_token %}
+{% for p in lista %}<div class="row g-2 align-items-center mb-3"><div class="col-md-5"><label class="form-label fw-semibold small mb-0" for="p_{{ p.clave }}">{{ p.descripcion }}</label><div class="ayuda"><code>{{ p.clave }}</code></div></div>
+<div class="col-md-7"><input id="p_{{ p.clave }}" class="form-control" name="{{ p.clave }}" value="{{ p.valor }}" {% if p.clave == 'moneda' %}readonly{% endif %}></div></div>{% endfor %}
+<button class="btn btn-primary px-4">Guardar parámetros</button></div></form>{% endblock %}

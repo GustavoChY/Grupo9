@@ -1,0 +1,6 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><h1>Usuarios</h1><div class="d-flex gap-2"><form method="get" class="d-flex gap-2"><input class="form-control" name="q" value="{{ texto }}" placeholder="Buscar"><button class="btn btn-outline-primary"><i class="bi bi-search"></i></button></form><a class="btn btn-accent" href="{% url 'usuario_nuevo' %}"><i class="bi bi-plus-lg"></i> Nuevo</a></div></div>
+<div class="tarjeta"><div class="table-responsive"><table class="table tabla"><thead><tr><th>Usuario</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Último acceso</th><th></th></tr></thead><tbody>
+{% for u in lista %}<tr><td class="codigo">{{ u.username }}</td><td>{{ u.nombres }} {{ u.apellidos }}</td><td>{{ u.email }}</td><td><span class="badge text-bg-light border">{{ u.rol }}</span></td>
+<td>{% if not u.activo %}<span class="badge text-bg-secondary">Inactivo</span>{% elif u.bloqueado %}<span class="badge text-bg-danger">Bloqueado</span>{% else %}<span class="badge text-bg-success">Activo</span>{% endif %}</td><td>{{ u.ultimo_acceso|fechahora }}</td><td><a class="btn btn-sm btn-outline-primary" href="{% url 'usuario_detalle' u.id %}">Gestionar</a></td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

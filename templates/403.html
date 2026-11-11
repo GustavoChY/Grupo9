@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block publico %}<div class="container py-5 text-center" style="max-width:560px">
+  <div class="display-1 text-warning"><i class="bi bi-shield-exclamation"></i></div>
+  <h1 class="h3">No tiene permiso para ver esta página</h1>
+  <p class="text-muted">Su rol actual no incluye esta función. Si cree que es un error, comuníquese con el administrador de la agencia.</p>
+  <a class="btn btn-primary" href="{% url 'inicio' %}">Volver al inicio</a>
+</div>{% endblock %}

@@ -1,0 +1,5 @@
+{% load ui %}
+<div class="table-responsive"><table class="table tabla"><thead><tr><th>Servicio</th><th>Tipo</th>{% if proveedor %}<th>Proveedor</th>{% endif %}<th class="num-r">Cant.</th><th class="num-r">Tarifa</th><th class="num-r">Subtotal</th>{% if editable %}<th></th>{% endif %}</tr></thead><tbody>
+{% for d in detalle %}<tr><td><i class="bi bi-{{ d.tipo|icono_serv }} text-primary me-1"></i>{{ d.nombre }}</td><td>{{ d.tipo|etiqueta }}</td>{% if proveedor %}<td>{{ d.proveedor }}</td>{% endif %}<td class="num-r">{{ d.cantidad }}</td><td class="num-r">{{ d.tarifa_unitaria|bs }}</td><td class="num-r">{{ d.subtotal|bs }}</td>
+{% if editable %}<td class="text-end"><form method="post">{% csrf_token %}<input type="hidden" name="accion" value="quitar"><input type="hidden" name="detalle_id" value="{{ d.id }}"><button class="btn btn-sm btn-outline-danger" title="Quitar"><i class="bi bi-trash"></i></button></form></td>{% endif %}</tr>
+{% empty %}<tr><td colspan="7" class="vacio"><i class="bi bi-box"></i>Sin servicios.</td></tr>{% endfor %}</tbody></table></div>

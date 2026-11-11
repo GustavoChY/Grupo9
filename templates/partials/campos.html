@@ -1,0 +1,28 @@
+{% load forms_tags %}
+<div class="row g-3">
+{% for c in campos %}
+  <div class="col-12 col-md-{{ c.col }}">
+  {% if c.tipo == 'checkbox' %}
+    <div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" name="{{ c.nombre }}" id="f_{{ c.nombre }}" {% if valores|fv:c.nombre %}checked{% endif %}><label class="form-check-label" for="f_{{ c.nombre }}">{{ c.etiqueta }}</label></div>
+  {% else %}
+    <label class="form-label fw-semibold small" for="f_{{ c.nombre }}">{{ c.etiqueta }}{% if c.req %} <span class="text-danger">*</span>{% endif %}</label>
+    {% if c.tipo == 'select' %}
+      <select class="form-select {% if errores|fe:c.nombre %}is-invalid{% endif %}" name="{{ c.nombre }}" id="f_{{ c.nombre }}">
+        {% if not c.req and c.opciones.0.0 != "" %}<option value="">—</option>{% elif c.req %}<option value="" disabled {% if not valores|fv:c.nombre %}selected{% endif %}>Seleccione…</option>{% endif %}
+        {% for o in c.opciones %}<option value="{{ o.0 }}" {% if valores|fv:c.nombre|stringformat:"s" == o.0|stringformat:"s" %}selected{% endif %}>{{ o.1 }}</option>{% endfor %}
+      </select>
+    {% elif c.tipo == 'textarea' %}
+      <textarea class="form-control {% if errores|fe:c.nombre %}is-invalid{% endif %}" rows="3" name="{{ c.nombre }}" id="f_{{ c.nombre }}">{{ valores|fv:c.nombre }}</textarea>
+    {% else %}
+      <input class="form-control {% if errores|fe:c.nombre %}is-invalid{% endif %}" id="f_{{ c.nombre }}" name="{{ c.nombre }}"
+        type="{% if c.tipo == 'number' or c.tipo == 'int' %}number{% else %}{{ c.tipo }}{% endif %}"
+        {% if c.tipo == 'number' %}step="{{ c.step|default:'any' }}"{% elif c.tipo == 'int' %}step="1"{% endif %}
+        {% if c.minimo is not None %}min="{{ c.minimo }}"{% endif %}{% if c.maximo is not None %} max="{{ c.maximo }}"{% endif %}
+        {% if c.largo %}maxlength="{{ c.largo }}"{% endif %}
+        {% if c.tipo != 'password' %}value="{{ valores|fv:c.nombre }}"{% else %}autocomplete="new-password"{% endif %}>
+    {% endif %}
+    {% if errores|fe:c.nombre %}<div class="invalid-feedback d-block">{{ errores|fe:c.nombre }}</div>{% elif c.ayuda %}<div class="ayuda mt-1">{{ c.ayuda }}</div>{% endif %}
+  {% endif %}
+  </div>
+{% endfor %}
+</div>

@@ -1,0 +1,15 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><div><a class="small" href="{% url 'solicitudes' %}">← Solicitudes</a><h1 class="mt-1"><span class="codigo fs-4">{{ s.codigo }}</span> {{ s.estado|estado }}</h1></div></div>
+<div class="row g-3"><div class="col-lg-8"><div class="tarjeta"><div class="cuerpo"><div class="row">
+  <div class="col-md-6 dato"><div class="et">Cliente</div><div class="val">{{ s.cliente }}</div></div>
+  <div class="col-md-6 dato"><div class="et">Contacto</div><div class="val">{{ s.telefono|default:"—" }} · {{ s.correo|default:"—" }}</div></div>
+  <div class="col-md-6 dato"><div class="et">Interés</div><div class="val">{{ s.paquete|default:s.destino }}</div></div>
+  <div class="col-md-6 dato"><div class="et">Pasajeros</div><div class="val">{{ s.nro_pasajeros }}</div></div>
+  <div class="col-md-6 dato"><div class="et">Fechas deseadas</div><div class="val">{{ s.fecha_viaje_inicio|fecha }} → {{ s.fecha_viaje_fin|fecha }}</div></div>
+  <div class="col-md-6 dato"><div class="et">Recibida</div><div class="val">{{ s.creado_en|fechahora }}</div></div>
+  <div class="col-12 dato"><div class="et">Observaciones</div><div class="val">{{ s.observaciones|default:"—" }}</div></div></div></div></div></div>
+<div class="col-lg-4"><div class="tarjeta mb-3"><div class="cab">Acciones</div><div class="cuerpo d-grid gap-2">
+  {% if s.estado != 'CERRADA' %}<form method="post">{% csrf_token %}<input type="hidden" name="accion" value="cotizar"><button class="btn btn-primary w-100"><i class="bi bi-file-earmark-plus"></i> Crear cotización</button></form>
+  <form method="post" onsubmit="return confirm('¿Cerrar la solicitud sin cotizar?')">{% csrf_token %}<input type="hidden" name="accion" value="cerrar"><button class="btn btn-outline-secondary w-100">Cerrar solicitud</button></form>{% else %}<div class="text-muted small">Solicitud cerrada.</div>{% endif %}</div></div>
+  <div class="tarjeta"><div class="cab">Cotizaciones generadas</div><div class="list-group list-group-flush">{% for c in cots %}<a class="list-group-item list-group-item-action d-flex justify-content-between" href="{% url 'cotizacion_detalle' c.id %}"><span class="codigo">{{ c.codigo }}</span><span>{{ c.estado|estado }}</span></a>{% empty %}<div class="vacio py-3">Ninguna aún.</div>{% endfor %}</div></div></div></div>{% endblock %}

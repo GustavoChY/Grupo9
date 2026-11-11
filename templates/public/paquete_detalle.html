@@ -1,0 +1,38 @@
+{% extends "base.html" %}{% load ui %}
+{% block titulo %}{{ p.nombre }}{% endblock %}
+{% block publico %}<div class="container py-4">
+  <nav class="small mb-3"><a href="{% url 'paquetes' %}">← Todos los paquetes</a></nav>
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="tarjeta overflow-hidden">
+        <div class="paq"><div class="foto t1" style="height:260px">{% if p.foto %}<img src="/media/{{ p.foto }}" alt="{{ p.nombre }}">{% else %}<i class="bi bi-globe-americas"></i>{% endif %}<span class="badge text-bg-light amb">{{ p.ambito|etiqueta }}</span></div></div>
+        <div class="cuerpo p-4">
+          <h1 class="h3">{{ p.nombre }}</h1>
+          <div class="text-muted mb-3"><i class="bi bi-geo-alt-fill text-danger"></i> {{ p.destino }}, {{ p.pais }} · <i class="bi bi-clock"></i> {{ p.duracion_dias }} días · Vigente hasta {{ p.vigente_hasta|fecha }}</div>
+          <p>{{ p.descripcion }}</p>
+          <h2 class="h5 mt-4">Qué incluye</h2>
+          <div class="list-group list-group-flush">
+            {% for s in servicios %}<div class="list-group-item d-flex gap-3 px-0">
+              <i class="bi bi-{{ s.tipo|icono_serv }} fs-4 text-primary"></i>
+              <div class="flex-grow-1"><strong>{{ s.nombre }}</strong>{% if s.cantidad > 1 %} <span class="badge text-bg-light">× {{ s.cantidad }}</span>{% endif %}<div class="small text-muted">{{ s.tipo|etiqueta }} · {{ s.proveedor }}{% if s.descripcion %} — {{ s.descripcion }}{% endif %}</div></div>
+            </div>{% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="tarjeta sticky-total"><div class="cuerpo p-4">
+        <div class="text-muted small">Precio final por persona</div>
+        <div class="display-6 fw-bold text-primary">{{ p.precio_final|bs }}</div>
+        <div class="total-box mt-3 small">
+          <div class="fila"><span>Servicios</span><span>{{ p.costo_proveedor|bs }}</span></div>
+          <div class="fila"><span>Comisión ({{ p.comision_pct|pct }})</span><span>{{ p.comision|bs }}</span></div>
+          <div class="fila"><span>Impuestos ({{ p.impuesto_pct|pct }})</span><span>{{ p.impuestos|bs }}</span></div>
+        </div>
+        {% if usuario and not es_staff %}<a class="btn btn-accent w-100 mt-3 btn-lg" href="{% url 'solicitar' %}?paquete={{ p.id }}"><i class="bi bi-send"></i> Solicitar cotización</a>
+        {% elif not usuario %}<a class="btn btn-accent w-100 mt-3 btn-lg" href="{% url 'ingresar' %}?next=/cliente/solicitar/%3Fpaquete={{ p.id }}"><i class="bi bi-send"></i> Ingresar para cotizar</a>
+        <div class="ayuda text-center mt-2">¿Primera vez? <a href="{% url 'registrarse' %}">Cree su cuenta</a></div>{% endif %}
+      </div></div>
+    </div>
+  </div>
+</div>{% endblock %}

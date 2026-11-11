@@ -1,0 +1,15 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><div><a href="{% url 'mis_cotizaciones' %}" class="small">← Mis cotizaciones</a><h1 class="mt-1"><span class="codigo fs-4">{{ c.codigo }}</span> {{ c.estado|estado }}</h1><div class="sub">{{ c.paquete|default:"Viaje a medida" }} · {{ c.nro_pasajeros }} pasajero(s) · vigente hasta {{ c.vigencia_hasta|fecha }}</div></div></div>
+<div class="row g-3">
+  <div class="col-lg-8"><div class="tarjeta"><div class="cab">Detalle de servicios</div>{% include "partials/cot_detalle_tabla.html" %}</div>
+    {% if c.observaciones %}<div class="tarjeta mt-3"><div class="cuerpo"><div class="dato mb-0"><div class="et">Observaciones</div><div class="val">{{ c.observaciones }}</div></div></div></div>{% endif %}</div>
+  <div class="col-lg-4"><div class="sticky-total">
+    <div class="tarjeta"><div class="cuerpo">{% include "partials/cot_totales.html" %}
+      {% if c.estado == 'ENVIADA' %}
+        {% if c.reserva_solicitada_en %}<div class="alert alert-info mt-3 mb-0 small"><i class="bi bi-hourglass-split"></i> Solicitó reservar el {{ c.reserva_solicitada_en|fechahora }}. El agente la confirmará pronto.</div>
+        {% else %}<form method="post" class="mt-3">{% csrf_token %}<input type="hidden" name="accion" value="reservar"><button class="btn btn-accent btn-lg w-100"><i class="bi bi-calendar-check"></i> Quiero reservar</button></form>{% endif %}
+        <form method="post" class="mt-2" onsubmit="return confirm('¿Rechazar esta cotización?')">{% csrf_token %}<input type="hidden" name="accion" value="rechazar"><button class="btn btn-outline-danger w-100 btn-sm">Rechazar cotización</button></form>
+      {% elif c.reserva_id %}<a class="btn btn-primary w-100 mt-3" href="{% url 'mi_reserva' c.reserva_id %}">Ver mi reserva</a>{% endif %}
+    </div></div></div></div>
+</div>{% endblock %}

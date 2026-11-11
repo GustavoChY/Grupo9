@@ -1,0 +1,7 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><div><h1>Bitácora de acceso</h1><div class="sub">Últimos 200 eventos de seguridad</div></div>
+<form method="get"><select class="form-select" name="evento" onchange="this.form.submit()"><option value="">Todos los eventos</option>{% for e in eventos %}<option value="{{ e }}" {% if ev == e %}selected{% endif %}>{{ e|etiqueta }}</option>{% endfor %}</select></form></div>
+<div class="tarjeta"><div class="table-responsive"><table class="table tabla"><thead><tr><th>Fecha</th><th>Usuario</th><th>Evento</th><th>Resultado</th><th>IP</th><th>Detalle</th></tr></thead><tbody>
+{% for b in lista %}<tr><td>{{ b.fecha|fechahora }}</td><td>{{ b.username_intentado|default:b.nombre|default:"—" }}</td><td>{{ b.evento|etiqueta }}</td><td>{% if b.exito %}<span class="badge text-bg-success">OK</span>{% else %}<span class="badge text-bg-danger">Falló</span>{% endif %}</td><td>{{ b.ip|default:"—" }}</td><td class="small text-muted">{{ b.detalle|default:"" }}</td></tr>
+{% empty %}<tr><td colspan="6" class="vacio">Sin eventos.</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

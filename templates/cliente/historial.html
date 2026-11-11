@@ -1,0 +1,6 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><h1>Historial de viajes</h1></div>
+<div class="tarjeta"><div class="table-responsive"><table class="table tabla"><thead><tr><th>Reserva</th><th>Salida</th><th>Regreso</th><th class="num-r">Total</th><th>Estado</th></tr></thead><tbody>
+{% for h in lista %}<tr><td class="codigo">{{ h.codigo }}</td><td>{{ h.fecha_inicio|fecha }}</td><td>{{ h.fecha_fin|fecha }}</td><td class="num-r">{{ h.total|bs }}</td><td>{{ h.estado|estado }}</td></tr>
+{% empty %}<tr><td colspan="5" class="vacio"><i class="bi bi-clock-history"></i>Su historial aparecerá aquí.</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

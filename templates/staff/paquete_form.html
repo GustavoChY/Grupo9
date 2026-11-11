@@ -1,0 +1,8 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><div><a class="small" href="{{ volver }}">← Volver</a><h1 class="mt-1">{{ titulo }}</h1></div></div>
+<form method="post" enctype="multipart/form-data" style="max-width:960px">{% csrf_token %}
+<div class="tarjeta mb-3"><div class="cuerpo">{% include "partials/campos.html" %}{% include "partials/campo_imagen.html" %}</div></div>
+<div class="tarjeta mb-3"><div class="cab">Servicios incluidos (cantidad por pasajero)</div><div class="table-responsive"><table class="table tabla"><tbody>
+{% for s in servicios %}<tr><td style="width:40px"><input class="form-check-input" type="checkbox" name="srv_{{ s.id }}" {% if s.marcado %}checked{% endif %}></td><td><i class="bi bi-{{ s.tipo|icono_serv }} text-primary me-1"></i>{{ s.nombre }}<div class="small text-muted">{{ s.proveedor }}</div></td><td class="num-r">{{ s.tarifa_base|bs }}</td><td style="width:100px"><input class="form-control form-control-sm" type="number" min="1" name="cant_{{ s.id }}" value="{{ s.cant }}"></td></tr>{% endfor %}</tbody></table></div></div>
+<button class="btn btn-primary px-4">Guardar paquete</button> <a class="btn btn-outline-secondary" href="{{ volver }}">Cancelar</a></form>{% endblock %}

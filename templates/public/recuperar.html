@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block titulo %}Recuperar contraseña{% endblock %}
+{% block publico %}<div class="container"><div class="caja-acceso">
+  <h1 class="h4 text-center mb-3">Recuperar contraseña</h1>
+  <div class="tarjeta"><div class="cuerpo p-4">
+    <form method="post">{% csrf_token %}<label class="form-label fw-semibold small">Correo de su cuenta</label><input class="form-control mb-3" type="email" name="email" required autofocus><button class="btn btn-primary w-100">Generar enlace</button></form>
+    {% if enlace %}<div class="alert alert-warning mt-3 mb-0 small"><strong>Instalación local (sin servidor de correo):</strong> use este enlace, válido 30 minutos:<br><a href="{{ enlace }}">{{ enlace }}</a></div>{% endif %}
+  </div></div>
+  <div class="text-center mt-3 small"><a href="{% url 'ingresar' %}">← Volver a ingresar</a></div>
+</div></div>{% endblock %}

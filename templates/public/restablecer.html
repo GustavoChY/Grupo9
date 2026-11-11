@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block publico %}<div class="container"><div class="caja-acceso">
+  <h1 class="h4 text-center mb-3">Nueva contraseña</h1>
+  <div class="tarjeta"><div class="cuerpo p-4"><form method="post">{% csrf_token %}
+    <div class="mb-3"><label class="form-label small fw-semibold">Nueva contraseña</label><input class="form-control" type="password" name="password" required autocomplete="new-password"><div class="ayuda">Mínimo 8 caracteres, con letras y números.</div></div>
+    <div class="mb-3"><label class="form-label small fw-semibold">Repítala</label><input class="form-control" type="password" name="password2" required autocomplete="new-password"></div>
+    <button class="btn btn-primary w-100">Guardar contraseña</button></form></div></div>
+</div></div>{% endblock %}

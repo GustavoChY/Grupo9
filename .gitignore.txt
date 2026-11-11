@@ -1,0 +1,9 @@
+venv/
+.env
+__pycache__/
+*.pyc
+media/comprobantes/
+media/paquetes/
+media/destinos/
+db.sqlite3
+.vscode/

@@ -1,0 +1,5 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><h1>Servicios y tarifas</h1><a class="btn btn-accent" href="{% url 'servicio_nuevo' %}"><i class="bi bi-plus-lg"></i> Nuevo</a></div>
+<div class="tarjeta"><div class="table-responsive"><table class="table tabla"><thead><tr><th>Servicio</th><th>Tipo</th><th>Proveedor</th><th>Destino</th><th>Categoría</th><th class="num-r">Tarifa base</th><th>Estado</th><th></th></tr></thead><tbody>
+{% for s in lista %}<tr><td><i class="bi bi-{{ s.tipo|icono_serv }} text-primary me-1"></i><strong>{{ s.nombre }}</strong></td><td>{{ s.tipo|etiqueta }}</td><td>{{ s.proveedor }}</td><td>{{ s.destino|default:"—" }}</td><td>{{ s.categoria|etiqueta }}</td><td class="num-r">{{ s.tarifa_base|bs }}</td><td>{% if s.activo %}<span class="badge text-bg-success">Activo</span>{% else %}<span class="badge text-bg-secondary">Inactivo</span>{% endif %}</td><td><a class="btn btn-sm btn-outline-secondary" href="{% url 'servicio_editar' s.id %}"><i class="bi bi-pencil"></i></a></td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% load ui %}
+{% block titulo %}Paquetes{% endblock %}
+{% block publico %}<div class="container py-4">
+  <div class="titulo-pagina"><div><h1>Paquetes turísticos</h1><div class="sub">{{ paquetes|length }} paquete(s) vigente(s)</div></div></div>
+  <form class="tarjeta p-3 mb-4 row g-2 align-items-end" method="get">
+    <div class="col-md-6"><label class="form-label small fw-semibold">Buscar</label><input class="form-control" name="q" value="{{ texto }}" placeholder="Destino, país o nombre del paquete"></div>
+    <div class="col-md-3"><label class="form-label small fw-semibold">Ámbito</label><select class="form-select" name="ambito"><option value="">Todos</option><option value="NACIONAL" {% if ambito == 'NACIONAL' %}selected{% endif %}>Nacional</option><option value="INTERNACIONAL" {% if ambito == 'INTERNACIONAL' %}selected{% endif %}>Internacional</option></select></div>
+    <div class="col-md-3 d-flex gap-2"><button class="btn btn-primary flex-fill"><i class="bi bi-search"></i> Buscar</button><a class="btn btn-outline-secondary" href="{% url 'paquetes' %}">Limpiar</a></div>
+  </form>
+  <div class="row g-4">
+    {% for p in paquetes %}<div class="col-md-6 col-lg-4">{% include "partials/tarjeta_paquete.html" %}</div>
+    {% empty %}<div class="vacio"><i class="bi bi-emoji-neutral"></i>No hay paquetes con esos criterios.</div>{% endfor %}
+  </div>
+</div>{% endblock %}

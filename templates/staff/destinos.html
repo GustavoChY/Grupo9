@@ -1,0 +1,9 @@
+{% extends "app.html" %}{% load ui %}
+{% block main %}
+<div class="titulo-pagina"><div><h1>Destinos</h1><div class="sub">Lugares a los que viaja la agencia. Los paquetes y servicios se asocian a un destino.</div></div><a class="btn btn-accent" href="{% url 'destino_nuevo' %}"><i class="bi bi-plus-lg"></i> Nuevo destino</a></div>
+<div class="tarjeta"><div class="table-responsive"><table class="table tabla"><thead><tr><th></th><th>Destino</th><th>País</th><th>Ámbito</th><th>Paquetes</th><th>Servicios</th><th></th></tr></thead><tbody>
+{% for d in lista %}<tr><td style="width:70px">{% if d.imagen %}<img src="/media/{{ d.imagen }}" alt="" style="width:60px;height:40px;object-fit:cover;border-radius:.4rem">{% else %}<span class="text-muted"><i class="bi bi-image fs-4"></i></span>{% endif %}</td>
+<td><strong>{{ d.nombre }}</strong></td><td>{{ d.pais }}</td><td>{{ d.ambito|etiqueta }}</td><td>{{ d.paquetes }}</td><td>{{ d.servicios }}</td>
+<td class="text-end text-nowrap"><a class="btn btn-sm btn-outline-secondary" href="{% url 'destino_editar' d.id %}"><i class="bi bi-pencil"></i></a>
+<form method="post" action="{% url 'destino_eliminar' d.id %}" class="d-inline" onsubmit="return confirm('¿Eliminar el destino {{ d.nombre }}?')">{% csrf_token %}<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form></td></tr>
+{% empty %}<tr><td colspan="7" class="vacio"><i class="bi bi-geo-alt"></i>Aún no hay destinos.</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}

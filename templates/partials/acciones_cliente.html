@@ -1,0 +1,4 @@
+{% if r.estado == 'PENDIENTE' or r.estado == 'CONFIRMADA' %}
+<div class="tarjeta"><div class="cab text-danger">Cancelar reserva</div><div class="cuerpo"><form method="post" onsubmit="return confirm('¿Seguro que desea cancelar la reserva?')">{% csrf_token %}<input type="hidden" name="accion" value="cancelar">
+  <textarea class="form-control mb-2" name="motivo" rows="2" placeholder="Motivo de la cancelación" required minlength="5"></textarea><button class="btn btn-outline-danger btn-sm w-100">Cancelar reserva</button></form></div></div>
+{% endif %}

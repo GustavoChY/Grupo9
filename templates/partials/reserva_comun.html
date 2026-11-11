@@ -1,0 +1,47 @@
+{% load ui forms_tags %}
+<div class="row g-3">
+ <div class="col-lg-8">
+  <div class="tarjeta mb-3"><div class="cab">Servicios reservados</div>{% include "partials/cot_detalle_tabla.html" %}</div>
+
+  <div class="tarjeta mb-3"><div class="cab"><span>Pasajeros <span class="badge text-bg-light">{{ pasajeros|length }} / {{ r.nro_pasajeros }}</span></span></div>
+    <div class="table-responsive"><table class="table tabla"><thead><tr><th>Nombre</th><th>Tipo</th><th>Documento</th><th>Nacimiento</th><th></th></tr></thead><tbody>
+    {% for p in pasajeros %}<tr><td>{{ p.nombres }} {{ p.apellidos }}</td><td>{{ p.tipo|etiqueta }}</td><td>{{ p.tipo_documento }} {{ p.nro_documento }}</td><td>{{ p.fecha_nacimiento|fecha }}</td>
+      <td class="text-end">{% if r.estado != 'CANCELADA' and r.estado != 'FINALIZADA' %}<form method="post" onsubmit="return confirm('¿Quitar pasajero?')">{% csrf_token %}<input type="hidden" name="accion" value="quitar_pasajero"><input type="hidden" name="pasajero_id" value="{{ p.id }}"><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>{% endif %}</td></tr>
+    {% empty %}<tr><td colspan="5" class="vacio"><i class="bi bi-person-plus"></i>Aún no registró pasajeros.</td></tr>{% endfor %}</tbody></table></div>
+    {% if r.estado != 'CANCELADA' and r.estado != 'FINALIZADA' and pasajeros|length < r.nro_pasajeros %}
+    <div class="cuerpo border-top"><form method="post">{% csrf_token %}<input type="hidden" name="accion" value="pasajero"><div class="fw-semibold mb-2 small">Agregar pasajero</div>
+      {% include "partials/campos.html" with campos=campos_pasajero valores=vp errores=ep %}<button class="btn btn-primary btn-sm mt-3"><i class="bi bi-plus-lg"></i> Agregar</button></form></div>{% endif %}
+  </div>
+
+  <div class="tarjeta mb-3"><div class="cab">Pagos</div>
+    <div class="table-responsive"><table class="table tabla"><thead><tr><th>Fecha</th><th>Método</th><th>Comprobante</th><th class="num-r">Monto</th><th>Estado</th>{% if es_staff %}<th></th>{% endif %}</tr></thead><tbody>
+    {% for p in pagos %}<tr><td>{{ p.fecha_pago|fecha }}</td><td>{{ p.metodo|etiqueta }}</td>
+      <td>{{ p.nro_comprobante|default:"—" }}{% if p.comprobante_archivo %} <a href="{% url 'comprobante' p.id %}" target="_blank" title="Ver archivo"><i class="bi bi-paperclip"></i></a>{% endif %}</td>
+      <td class="num-r">{{ p.monto|bs }}</td><td>{{ p.estado|estado }}{% if p.observacion %}<div class="small text-muted">{{ p.observacion }}</div>{% endif %}</td>
+      {% if es_staff %}<td class="text-end">{% if p.estado == 'PENDIENTE_VERIFICACION' and 'PAGO_VERIFICAR' in permisos %}
+        <form method="post" action="{% url 'pago_resolver' p.id %}" class="d-flex gap-1 justify-content-end">{% csrf_token %}<input type="hidden" name="volver" value="{{ request.path }}">
+          <input class="form-control form-control-sm" style="max-width:150px" name="observacion" placeholder="Motivo (si rechaza)">
+          <button name="decision" value="verificar" class="btn btn-sm btn-success" title="Verificar"><i class="bi bi-check-lg"></i></button>
+          <button name="decision" value="rechazar" class="btn btn-sm btn-outline-danger" title="Rechazar"><i class="bi bi-x-lg"></i></button></form>{% endif %}</td>{% endif %}</tr>
+    {% empty %}<tr><td colspan="6" class="vacio"><i class="bi bi-cash"></i>Sin pagos registrados.</td></tr>{% endfor %}</tbody></table></div>
+    {% if r.estado != 'CANCELADA' and r.estado != 'FINALIZADA' and r.saldo > r.pendiente_verificacion %}
+    <div class="cuerpo border-top"><form method="post" enctype="multipart/form-data">{% csrf_token %}<input type="hidden" name="accion" value="pago"><div class="fw-semibold mb-2 small">Registrar un pago</div>
+      {% include "partials/campos.html" with campos=campos_pago valores=vg errores=eg %}
+      <div class="mt-3"><label class="form-label small fw-semibold">Comprobante (JPG, PNG o PDF, máx. 5 MB)</label><input type="file" name="archivo" accept=".jpg,.jpeg,.png,.pdf" class="form-control {% if eg.archivo %}is-invalid{% endif %}">{% if eg.archivo %}<div class="invalid-feedback">{{ eg.archivo }}</div>{% endif %}</div>
+      <button class="btn btn-accent mt-3"><i class="bi bi-upload"></i> Registrar pago</button></form></div>{% endif %}
+  </div>
+ </div>
+
+ <div class="col-lg-4"><div class="sticky-total">
+  <div class="tarjeta mb-3"><div class="cuerpo">
+    <div class="total-box"><div class="fila"><span>Total de la reserva</span><strong>{{ r.total|bs }}</strong></div>
+      <div class="fila"><span>Pagado (verificado)</span><span class="text-success">{{ r.pagado_verificado|bs }}</span></div>
+      <div class="fila"><span>En verificación</span><span>{{ r.pendiente_verificacion|bs }}</span></div>
+      <div class="fila total"><span>Saldo</span><span>{{ r.saldo|bs }}</span></div></div>
+    <div class="progress mt-3"><div class="progress-bar" style="width:{{ r|avance }}%"></div></div><div class="small text-muted mt-1">{{ r|avance }}% pagado</div>
+  </div></div>
+  <div class="tarjeta mb-3"><div class="cab">Historial de estados</div><div class="cuerpo"><ul class="linea-tiempo">
+    {% for h in historial %}<li><strong>{{ h.estado_nuevo|estado }}</strong>{% if h.estado_anterior %} <small class="text-muted">desde {{ h.estado_anterior|etiqueta|lower }}</small>{% endif %}<div class="small text-muted">{{ h.fecha|fechahora }}{% if h.usuario %} · {{ h.usuario }}{% endif %}</div></li>{% endfor %}</ul></div></div>
+  {% if es_staff %}{% include "partials/acciones_staff.html" %}{% else %}{% include "partials/acciones_cliente.html" %}{% endif %}
+ </div></div>
+</div>

@@ -1,0 +1,46 @@
+{% with u=request.resolver_match.url_name %}
+{% if es_staff %}
+  <div class="grupo">Operación</div>
+  {% if 'COT_GESTIONAR' in permisos %}
+  <a class="item {% if u == 'gestion' %}activo{% endif %}" href="{% url 'gestion' %}"><i class="bi bi-speedometer2"></i>Panel</a>
+  <a class="item {% if u == 'solicitudes' or u == 'solicitud_detalle' %}activo{% endif %}" href="{% url 'solicitudes' %}"><i class="bi bi-inbox"></i>Solicitudes</a>
+  <a class="item {% if u == 'cotizaciones' or u == 'cotizacion_detalle' or u == 'cotizacion_nueva' %}activo{% endif %}" href="{% url 'cotizaciones' %}"><i class="bi bi-file-earmark-text"></i>Cotizaciones</a>
+  {% endif %}
+  {% if 'RES_GESTIONAR' in permisos %}<a class="item {% if u == 'reservas' or u == 'reserva_detalle' %}activo{% endif %}" href="{% url 'reservas' %}"><i class="bi bi-calendar-check"></i>Reservas</a>{% endif %}
+  {% if 'PAGO_VERIFICAR' in permisos %}<a class="item {% if u == 'pagos' %}activo{% endif %}" href="{% url 'pagos' %}"><i class="bi bi-cash-coin"></i>Pagos</a>{% endif %}
+  {% if 'CLI_GESTIONAR' in permisos %}<a class="item {% if 'cliente' in u and 'mis' not in u %}activo{% endif %}" href="{% url 'clientes' %}"><i class="bi bi-people"></i>Clientes</a>{% endif %}
+  {% if 'PROV_GESTIONAR' in permisos or 'PAQ_GESTIONAR' in permisos %}
+  <div class="grupo">Catálogo</div>
+  {% if 'PROV_GESTIONAR' in permisos %}
+  <a class="item {% if 'proveedor' in u %}activo{% endif %}" href="{% url 'proveedores' %}"><i class="bi bi-building"></i>Proveedores</a>
+  <a class="item {% if 'servicio' in u %}activo{% endif %}" href="{% url 'servicios' %}"><i class="bi bi-tags"></i>Servicios</a>
+  {% endif %}
+  {% if 'PAQ_GESTIONAR' in permisos %}
+  <a class="item {% if 'destino' in u %}activo{% endif %}" href="{% url 'destinos' %}"><i class="bi bi-geo-alt"></i>Destinos</a>
+  <a class="item {% if 'paquete' in u %}activo{% endif %}" href="{% url 'paquetes_gestion' %}"><i class="bi bi-suitcase2"></i>Paquetes</a>{% endif %}
+  {% endif %}
+  {% if 'USR_GESTIONAR' in permisos or 'REP_VER' in permisos %}
+  <div class="grupo">Administración</div>
+  {% if 'REP_VER' in permisos %}<a class="item {% if u == 'reportes' %}activo{% endif %}" href="{% url 'reportes' %}"><i class="bi bi-bar-chart-line"></i>Reportes</a>{% endif %}
+  {% if 'USR_GESTIONAR' in permisos %}
+  <a class="item {% if 'usuario' in u %}activo{% endif %}" href="{% url 'usuarios' %}"><i class="bi bi-person-gear"></i>Usuarios</a>
+  <a class="item {% if u == 'bitacora' %}activo{% endif %}" href="{% url 'bitacora' %}"><i class="bi bi-shield-lock"></i>Bitácora de acceso</a>
+  <a class="item {% if u == 'parametros' %}activo{% endif %}" href="{% url 'parametros' %}"><i class="bi bi-sliders"></i>Parámetros</a>
+  {% endif %}
+  {% endif %}
+  {% if 'COT_GESTIONAR' in permisos %}<a class="item {% if u == 'tareas' %}activo{% endif %}" href="{% url 'tareas' %}"><i class="bi bi-arrow-repeat"></i>Tareas automáticas</a>{% endif %}
+{% else %}
+  <div class="grupo">Mi viaje</div>
+  <a class="item {% if u == 'panel' %}activo{% endif %}" href="{% url 'panel' %}"><i class="bi bi-house-heart"></i>Inicio</a>
+  <a class="item {% if u == 'solicitar' %}activo{% endif %}" href="{% url 'solicitar' %}"><i class="bi bi-send"></i>Solicitar cotización</a>
+  <a class="item {% if u == 'mis_solicitudes' %}activo{% endif %}" href="{% url 'mis_solicitudes' %}"><i class="bi bi-inbox"></i>Mis solicitudes</a>
+  <a class="item {% if u == 'mis_cotizaciones' or u == 'mi_cotizacion' %}activo{% endif %}" href="{% url 'mis_cotizaciones' %}"><i class="bi bi-file-earmark-text"></i>Mis cotizaciones</a>
+  <a class="item {% if u == 'mis_reservas' or u == 'mi_reserva' %}activo{% endif %}" href="{% url 'mis_reservas' %}"><i class="bi bi-calendar-check"></i>Mis reservas</a>
+  <a class="item {% if u == 'historial' %}activo{% endif %}" href="{% url 'historial' %}"><i class="bi bi-clock-history"></i>Historial de viajes</a>
+  <div class="grupo">Explorar</div>
+  <a class="item" href="{% url 'paquetes' %}"><i class="bi bi-suitcase2"></i>Paquetes turísticos</a>
+{% endif %}
+<div class="grupo">Mi cuenta</div>
+<a class="item {% if u == 'notificaciones' %}activo{% endif %}" href="{% url 'notificaciones' %}"><i class="bi bi-bell"></i>Notificaciones{% if n_notif %}<span class="badge text-bg-warning contador">{{ n_notif }}</span>{% endif %}</a>
+<a class="item {% if u == 'cuenta' or u == 'cambiar_password' %}activo{% endif %}" href="{% url 'cuenta' %}"><i class="bi bi-person-circle"></i>Mis datos</a>
+{% endwith %}

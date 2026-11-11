@@ -1,0 +1,27 @@
+{% extends "app.html" %}{% load ui %}
+{% block titulo %}Panel de gestión{% endblock %}
+{% block main %}
+<div class="titulo-pagina"><div><h1>Panel de gestión</h1><div class="sub">Bienvenido, {{ usuario.nombres }} · {{ usuario.rol_nombre }}</div></div><a href="{% url 'cotizacion_nueva' %}" class="btn btn-accent"><i class="bi bi-plus-lg"></i> Nueva cotización</a></div>
+<div class="row g-3 mb-3">
+  <div class="col-6 col-xl-3"><a class="kpi-link" href="{% url 'solicitudes' %}"><div class="tarjeta kpi"><div class="ico ambar"><i class="bi bi-inbox"></i></div><div><div class="num">{{ k.solicitudes }}</div><div class="et">Solicitudes por atender</div></div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="kpi-link" href="{% url 'cotizaciones' %}?estado=ENVIADA"><div class="tarjeta kpi"><div class="ico"><i class="bi bi-file-earmark-text"></i></div><div><div class="num">{{ k.cot_enviadas }}</div><div class="et">Cotizaciones enviadas</div></div></div></a></div>
+  <div class="col-6 col-xl-3"><a class="kpi-link" href="{% url 'pagos' %}"><div class="tarjeta kpi"><div class="ico rojo"><i class="bi bi-cash-coin"></i></div><div><div class="num">{{ k.pagos_pendientes }}</div><div class="et">Pagos por verificar</div></div></div></a></div>
+  <div class="col-6 col-xl-3"><div class="tarjeta kpi"><div class="ico verde"><i class="bi bi-graph-up-arrow"></i></div><div><div class="num fs-4">{{ k.cobrado_mes|bs }}</div><div class="et">Cobrado este mes</div></div></div></div>
+</div>
+{% if k.reservas_pedidas %}<div class="alert alert-warning"><i class="bi bi-bell"></i> <strong>{{ k.reservas_pedidas }}</strong> cliente(s) pidieron convertir su cotización en reserva.</div>{% endif %}
+<div class="row g-3">
+  <div class="col-xl-7">
+    <div class="tarjeta mb-3"><div class="cab"><span>Solicitudes pendientes</span><a class="small" href="{% url 'solicitudes' %}">Ver todas</a></div>
+      <div class="table-responsive"><table class="table tabla"><tbody>{% for s in solicitudes %}<tr><td class="codigo">{{ s.codigo }}</td><td>{{ s.cliente }}</td><td>{{ s.interes }}</td><td>{{ s.estado|estado }}</td><td class="text-end"><a class="btn btn-sm btn-primary" href="{% url 'solicitud_detalle' s.id %}">Atender</a></td></tr>
+      {% empty %}<tr><td class="vacio"><i class="bi bi-emoji-smile"></i>No hay solicitudes pendientes.</td></tr>{% endfor %}</tbody></table></div></div>
+    <div class="tarjeta"><div class="cab"><span>Clientes que piden reservar</span></div>
+      <div class="table-responsive"><table class="table tabla"><tbody>{% for c in pedidas %}<tr><td class="codigo">{{ c.codigo }}</td><td>{{ c.cliente }}</td><td class="num-r">{{ c.total|bs }}</td><td class="small text-muted">{{ c.reserva_solicitada_en|fechahora }}</td><td class="text-end"><a class="btn btn-sm btn-accent" href="{% url 'cotizacion_detalle' c.id %}">Revisar</a></td></tr>
+      {% empty %}<tr><td class="vacio">Ninguna solicitud de reserva.</td></tr>{% endfor %}</tbody></table></div></div>
+  </div>
+  <div class="col-xl-5">
+    <div class="tarjeta mb-3"><div class="cab"><span>Pagos por verificar</span><a class="small" href="{% url 'pagos' %}">Ir a pagos</a></div>
+      <div class="table-responsive"><table class="table tabla"><tbody>{% for p in pagos %}<tr><td class="codigo">{{ p.reserva }}</td><td>{{ p.cliente }}</td><td class="num-r">{{ p.monto|bs }}</td></tr>{% empty %}<tr><td class="vacio">Sin pagos pendientes.</td></tr>{% endfor %}</tbody></table></div></div>
+    <div class="tarjeta"><div class="cab">Cotizaciones por vencer</div>
+      <div class="table-responsive"><table class="table tabla"><tbody>{% for c in por_vencer %}<tr><td class="codigo">{{ c.codigo }}</td><td>{{ c.cliente }}</td><td class="num-r"><span class="badge text-bg-{% if c.dias_restantes <= 1 %}danger{% else %}warning{% endif %}">{{ c.dias_restantes }} día(s)</span></td></tr>{% empty %}<tr><td class="vacio">Ninguna por vencer.</td></tr>{% endfor %}</tbody></table></div></div>
+  </div>
+</div>{% endblock %}

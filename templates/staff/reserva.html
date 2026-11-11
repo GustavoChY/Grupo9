@@ -1,0 +1,8 @@
+{% extends "app.html" %}{% load ui %}
+{% block titulo %}Reserva {{ r.codigo }}{% endblock %}
+{% block main %}
+<div class="titulo-pagina"><div><a href="{% url 'reservas' %}" class="small">← Reservas</a><h1 class="mt-1"><span class="codigo fs-4">{{ r.codigo }}</span> {{ r.estado|estado }}</h1>
+<div class="sub">{{ r.cliente }} · Viaje {{ r.fecha_inicio|fecha }} → {{ r.fecha_fin|fecha }} · Cotización {{ r.cotizacion }} · Agente {{ r.agente }}{% if r.motivo_cancelacion %} · Motivo: {{ r.motivo_cancelacion }}{% endif %}</div></div>
+{% if 'CLI_GESTIONAR' in permisos %}<a class="btn btn-outline-primary" href="{% url 'cliente_detalle' r.cliente_id %}"><i class="bi bi-person"></i> Ver cliente</a>{% endif %}</div>
+{% include "partials/reserva_comun.html" %}
+{% endblock %}
